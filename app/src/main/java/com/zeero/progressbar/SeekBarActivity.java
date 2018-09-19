@@ -75,7 +75,7 @@ public class SeekBarActivity extends Activity {
             if (i == 1 || i == 3) {
                 mProgressItem.progressItemPercentage = (transparentSpan / totalSpan) * 100;
                 mProgressItem.color = R.color.transparent;
-            } else if (i > 0 && i <= progress) {
+            } else if (i <= progress) {
                 mProgressItem.color = color;
             }
             progressItemList.add(mProgressItem);
@@ -99,7 +99,21 @@ public class SeekBarActivity extends Activity {
                 @Override
                 public void run() {
                     int score = strength.getScore();
-                    initDataToSeekbar(R.color.green, score);
+                    switch (score) {
+                        case 1:
+                            initDataToSeekbar(R.color.grey, score);
+                            break;
+                        case 2:
+                            initDataToSeekbar(R.color.yellow, score);
+                            break;
+                        case 3:
+                            initDataToSeekbar(R.color.yellow, score);
+                            break;
+                        case 4:
+                            initDataToSeekbar(R.color.grey, score);
+                            break;
+
+                    }
                 }
             });
             return null;

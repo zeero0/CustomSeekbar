@@ -101,7 +101,7 @@ public class SeekBarActivity extends Activity {
                     int score = strength.getScore();
                     switch (score) {
                         case 1:
-                            initDataToSeekbar(R.color.grey, score);
+                            initDataToSeekbar(R.color.red, score);
                             break;
                         case 2:
                             initDataToSeekbar(R.color.red, score);
@@ -110,6 +110,9 @@ public class SeekBarActivity extends Activity {
                             initDataToSeekbar(R.color.yellow, score);
                             break;
                         case 4:
+                            initDataToSeekbar(R.color.grey, score);
+                            break;
+                        default:
                             initDataToSeekbar(R.color.grey, score);
                             break;
 

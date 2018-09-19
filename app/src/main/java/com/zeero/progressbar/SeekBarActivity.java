@@ -13,11 +13,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.ToggleButton;
 
 import com.nulabinc.zxcvbn.Strength;
 import com.nulabinc.zxcvbn.Zxcvbn;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class SeekBarActivity extends Activity {
@@ -25,15 +27,15 @@ public class SeekBarActivity extends Activity {
     private static final Handler HANDLER = new Handler(Looper.getMainLooper());
     private static final Zxcvbn ZXCVBN = new Zxcvbn();
 
-    private float totalSpan = 100;
-    private float greenSpan = 32;
-    private float transparentSpan = 2;
+    private static final float totalSpan = 100;
+    private static final float greenSpan = 32;
+    private static final float transparentSpan = 2;
 
-    private CustomSeekBar seekbar;
+    private static CustomSeekBar seekbar;
     private EditText etPassword;
 
-    private ArrayList<ProgressItem> progressItemList;
-    private ProgressItem mProgressItem;
+    private static ArrayList<ProgressItem> progressItemList;
+    private static ProgressItem mProgressItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,36 +59,37 @@ public class SeekBarActivity extends Activity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                initDataToSeekbar(R.color.green, Integer.valueOf(etPassword.getText().toString()));
+                MeasureTask task = new MeasureTask(seekbar);
+                task.execute(editable.toString());
             }
         });
         initDataToSeekbar(R.color.grey, 0);
     }
 
-    private void initDataToSeekbar(int color, int progress) {
-            progressItemList = new ArrayList<ProgressItem>();
-            for (int i = 0; i < 5; i++) {
-                mProgressItem = new ProgressItem();
-                mProgressItem.progressItemPercentage = (greenSpan / totalSpan) * 100;
-                mProgressItem.color = R.color.grey;
-                if (i == 1 || i == 3) {
-                    mProgressItem.progressItemPercentage = (transparentSpan / totalSpan) * 100;
-                    mProgressItem.color = R.color.transparent;
-                } else if (i <= progress) {
-                    mProgressItem.color = color;
-                }
-                progressItemList.add(mProgressItem);
+    private static void initDataToSeekbar(int color, int progress) {
+        progressItemList = new ArrayList<ProgressItem>();
+        for (int i = 0; i < 5; i++) {
+            mProgressItem = new ProgressItem();
+            mProgressItem.progressItemPercentage = (greenSpan / totalSpan) * 100;
+            mProgressItem.color = R.color.grey;
+            if (i == 1 || i == 3) {
+                mProgressItem.progressItemPercentage = (transparentSpan / totalSpan) * 100;
+                mProgressItem.color = R.color.transparent;
+            } else if (i > 0 && i <= progress) {
+                mProgressItem.color = color;
             }
-            seekbar.initData(progressItemList);
-            seekbar.invalidate();
+            progressItemList.add(mProgressItem);
+        }
+        seekbar.initData(progressItemList);
+        seekbar.invalidate();
     }
 
     private static class MeasureTask extends AsyncTask<String, Void, Void> {
 
-        private final ProgressBar progressBar;
+        private final WeakReference<CustomSeekBar> seekBar;
 
-        public MeasureTask(ProgressBar progressBar) {
-            this.progressBar = progressBar;
+        public MeasureTask(CustomSeekBar seekBar) {
+            this.seekBar = new WeakReference<>(seekBar);
         }
 
         @Override
@@ -96,8 +99,7 @@ public class SeekBarActivity extends Activity {
                 @Override
                 public void run() {
                     int score = strength.getScore();
-                    progressBar.setProgress(score);
-//                    initDataToSeekbar(R.color.green, Integer.valueOf(score));
+                    initDataToSeekbar(R.color.green, score);
                 }
             });
             return null;

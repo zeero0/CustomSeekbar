@@ -104,13 +104,13 @@ public class SeekBarActivity extends Activity {
                             initDataToSeekbar(R.color.red, score);
                             break;
                         case 2:
-                            initDataToSeekbar(R.color.red, score);
+                            initDataToSeekbar(R.color.yellow, score);
                             break;
                         case 3:
                             initDataToSeekbar(R.color.yellow, score);
                             break;
                         case 4:
-                            initDataToSeekbar(R.color.grey, score);
+                            initDataToSeekbar(R.color.green, score);
                             break;
                         default:
                             initDataToSeekbar(R.color.grey, score);
